@@ -1,0 +1,78 @@
+
+
+Theme persistence · HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Day 1 — Theme Persistence</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 480px;
+      margin: 60px auto;
+      padding: 0 16px;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    body.light { background: #ffffff; color: #111111; }
+    body.dark  { background: #1a1a1a; color: #f0f0f0; }
+ 
+    button {
+      padding: 10px 18px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 8px;
+      border: 1px solid #888;
+    }
+    body.light button { background: #f0f0f0; color: #111; }
+    body.dark button  { background: #333; color: #f0f0f0; }
+  </style>
+</head>
+<body>
+  <h1>Theme Persistence</h1>
+  <p>Current theme is saved to localStorage and reapplied on every page load.</p>
+  <button id="theme-toggle">Toggle Theme</button>
+ 
+  <script>
+    // ==========================================================
+    // DAY 1 — Theme Persistence
+    // - Switch between light/dark mode
+    // - Persist preference in localStorage
+    // - Apply the saved theme on page load
+    // ==========================================================
+ 
+    const STORAGE_KEY = "theme";
+    const toggleBtn = document.querySelector("#theme-toggle");
+ 
+    function applyTheme(theme) {
+      document.body.classList.remove("light", "dark");
+      document.body.classList.add(theme);
+      toggleBtn.textContent = theme === "dark" ? "☀️ Switch to Light" : "🌙 Switch to Dark";
+    }
+ 
+    function saveTheme(theme) {
+      localStorage.setItem(STORAGE_KEY, theme);
+    }
+ 
+    function loadTheme() {
+      return localStorage.getItem(STORAGE_KEY) || "light";
+    }
+ 
+    function toggleTheme() {
+      const current = document.body.classList.contains("dark") ? "dark" : "light";
+      const next = current === "dark" ? "light" : "dark";
+      applyTheme(next);
+      saveTheme(next);
+    }
+ 
+    // ==========================================================
+    // Initialize: apply whatever theme was saved (or default
+    // to light if nothing has been saved yet)
+    // ==========================================================
+    applyTheme(loadTheme());
+ 
+    toggleBtn.addEventListener("click", toggleTheme);
+  </script>
+</body>
+</html>
+ 
