@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Day 2 — Recent Searches</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <main class="container">
+        <h1>Recent Searches (Day 2)</h1>
+
+        <div class="search-wrap">
+            <div class="search-input-group" id="searchGroup">
+                <input id="searchInput" type="search" placeholder="Search..." aria-label="Search input" autocomplete="off"/>
+                <button id="searchBtn" aria-label="Search">Search</button>
+
+                <div id="historyDropdown" class="dropdown" aria-label="Recent searches" hidden>
+                    <div class="dropdown-header">
+                        <span>Recent searches</span>
+                        <button id="clearHistoryBtn" class="small">Clear</button>
+                    </div>
+                    <ul id="historyList" role="list"></ul>
+                </div>
+            </div>
+        </div>
+
+        <section id="results" class="results" aria-live="polite"></section>
+        <p class="hint">Tip: Use the search input and press Enter or click Search. The last 5 unique searches are saved.</p>
+    </main>
+
+    <script src="recent-searches.js"></script>
+</body>
+</html>

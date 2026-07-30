@@ -1,0 +1,102 @@
+:root{
+    --bg:#f6f7fb;
+    --card:#fff;
+    --muted:#6b7280;
+    --accent:#2563eb;
+    --danger:#ef4444;
+    --radius:8px;
+    --shadow:0 6px 18px rgba(20,20,40,0.06);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+*{box-sizing:border-box}
+body{
+    margin:0;
+    background:var(--bg);
+    color:#111827;
+    padding:32px;
+}
+.container{
+    max-width:720px;
+    margin:0 auto;
+}
+h1{margin:0 0 18px;font-size:20px}
+.search-wrap{margin-bottom:18px}
+.search-input-group{
+    position:relative;
+    display:flex;
+    gap:8px;
+    align-items:center;
+}
+#searchInput{
+    flex:1;
+    padding:12px 14px;
+    border-radius:8px;
+    border:1px solid #e6e9ef;
+    background:var(--card);
+    box-shadow:var(--shadow);
+    font-size:15px;
+}
+#searchBtn{
+    padding:10px 14px;
+    background:var(--accent);
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+}
+#searchBtn:active{transform:translateY(1px)}
+.dropdown{
+    position:absolute;
+    top:calc(100% + 10px);
+    left:0;
+    width:100%;
+    background:var(--card);
+    border:1px solid #e6e9ef;
+    border-radius:8px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+    z-index:20;
+}
+.dropdown-header{
+    padding:8px 12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:1px solid #f1f3f6;
+    font-size:13px;
+    color:var(--muted);
+}
+.small{
+    background:transparent;
+    border:1px solid #e6e9ef;
+    padding:4px 8px;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:12px;
+}
+#historyList{list-style:none;margin:0;padding:6px;max-height:220px;overflow:auto}
+.history-item{
+    display:flex;
+    justify-content:space-between;
+    gap:8px;
+    padding:8px 10px;
+    align-items:center;
+    cursor:pointer;
+    border-radius:6px;
+}
+.history-item:hover{background:#f8fafc}
+.history-text{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.remove-btn{
+    background:transparent;border:none;color:var(--danger);cursor:pointer;padding:6px;border-radius:6px;font-weight:700
+}
+.results{
+    background:var(--card);
+    padding:16px;
+    border-radius:8px;
+    border:1px solid #e6e9ef;
+    box-shadow:var(--shadow);
+    min-height:80px;
+}
+.hint{color:var(--muted);font-size:13px;margin-top:8px}
