@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Shopping Cart</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 700px; margin: 0 auto; padding: 0 16px 40px; }
+    header { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid #ddd; margin-bottom: 20px; }
+    .cart-badge { background: #333; color: white; border-radius: 999px; padding: 4px 10px; font-size: 14px; }
+    .products { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 30px; }
+    .product-card { border: 1px solid #ddd; border-radius: 10px; padding: 14px; text-align: center; }
+    .product-card img { width: 80px; height: 80px; object-fit: contain; margin-bottom: 8px; }
+    .product-card button { margin-top: 8px; padding: 6px 12px; cursor: pointer; }
+    .cart-item { display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #eee; padding: 10px 0; }
+    .cart-item .name { flex: 1; }
+    .qty-controls { display: flex; align-items: center; gap: 6px; }
+    .qty-controls button { width: 26px; height: 26px; cursor: pointer; }
+    .cart-total { font-size: 18px; font-weight: bold; margin-top: 14px; text-align: right; }
+    .empty-cart { color: #888; font-style: italic; }
+    #clear-cart-btn { margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Shop</h1>
+    <span class="cart-badge" id="cart-count">🛒 0</span>
+  </header>
+
+  <h2>Products</h2>
+  <div class="products" id="products-list"></div>
+
+  <h2>Your Cart</h2>
+  <div id="cart-list"></div>
+  <div class="cart-total" id="cart-total"></div>
+  <button id="clear-cart-btn">Clear Cart</button>
+
+  <script>
+    // ==========================================================
+    // STATE (centralized, persisted)
+    // ==========================================================
+    const CART_STORAGE_KEY = "shopping_cart";
+
+    const state = {
+      products: [
+        { id: 1, name: "Laptop", price: 999, image: "https://via.placeholder.com/80?text=Laptop" },
+        { id: 2, name: "Phone", price: 699, image: "https://via.placeholder.com/80?text=Phone" },
+        { id: 3, name: "Headphones", price: 199, image: "https://via.placeholder.com/80?text=Headphones" },
+        { id: 4, name: "Keyboard", price: 89, image: "https://via.placeholder.com/80?text=Keyboard" }
+      ],
+      cart: [] // { productId, quantity }
+    };
+
+    // ==========================================================
+    // PERSISTENCE
+    // ==========================================================
+    function saveCart() {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(state.cart));
+    }
+
+    function loadCart() {
+      const saved = localStorage.getItem(CART_STORAGE_KEY);
+      state.cart = saved ? JSON.parse(saved) : [];
+    }
+
+    // ==========================================================
+    // CART LOGIC
+    // ==========================================================
+    function addToCart(productId) {
+      const existing = state.cart.find(item => item.productId === productId);
+
+      if (existing) {
+        existing.quantity++;
+      } else {
+        state.cart.push({ productId, quantity: 1 });
+      }
+
+      saveCart();
+      renderCart();
+    }
+
+    function updateQuantity(productId, quantity) {
+      if (quantity <= 0) {
+        removeFromCart(productId);
+        return;
+      }
+      const item = state.cart.find(item => item.productId === productId);
+      if (item) {
+        item.quantity = quantity;
+        saveCart();
+        renderCart();
+      }
+    }
+
+    function removeFromCart(productId) {
+      state.cart = state.cart.filter(item => item.productId !== productId);
+      saveCart();
+      renderCart();
+    }
+
+    function clearCart() {
+      state.cart = [];
+      saveCart();
+      renderCart();
+    }
+
+    function getCartTotal() {
+      return state.cart.reduce((total, item) => {
+        const product = state.products.find(p => p.id === item.productId);
+        return total + (product.price * item.quantity);
+      }, 0);
+    }
+
+    function getCartCount() {
+      return state.cart.reduce((count, item) => count + item.quantity, 0);
+    }
+
+    // ==========================================================
+    // RENDERING
+    // ==========================================================
+    function renderProducts() {
+      const el = document.querySelector("#products-list");
+      el.innerHTML = state.products.map(p => `
+        <div class="product-card">
+          <img src="${p.image}" alt="${p.name}" />
+          <div>${p.name}</div>
+          <div>$${p.price}</div>
+          <button data-add="${p.id}">Add to Cart</button>
+        </div>
+      `).join("");
+
+      el.querySelectorAll("button[data-add]").forEach(btn => {
+        btn.addEventListener("click", () => addToCart(Number(btn.dataset.add)));
+      });
+    }
+
+    function renderCart() {
+      const listEl = document.querySelector("#cart-list");
+      const totalEl = document.querySelector("#cart-total");
+      const countEl = document.querySelector("#cart-count");
+
+      if (state.cart.length === 0) {
+        listEl.innerHTML = `<p class="empty-cart">Your cart is empty.</p>`;
+        totalEl.textContent = "";
+        countEl.textContent = "🛒 0";
+        return;
+      }
+
+      listEl.innerHTML = state.cart.map(item => {
+        const product = state.products.find(p => p.id === item.productId);
+        return `
+          <div class="cart-item">
+            <span class="name">${product.name}</span>
+            <span>$${product.price} each</span>
+            <div class="qty-controls">
+              <button data-decrease="${item.productId}">−</button>
+              <span>${item.quantity}</span>
+              <button data-increase="${item.productId}">+</button>
+            </div>
+            <button data-remove="${item.productId}">Remove</button>
+          </div>
+        `;
+      }).join("");
+
+      listEl.querySelectorAll("button[data-increase]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = Number(btn.dataset.increase);
+          const item = state.cart.find(i => i.productId === id);
+          updateQuantity(id, item.quantity + 1);
+        });
+      });
+
+      listEl.querySelectorAll("button[data-decrease]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = Number(btn.dataset.decrease);
+          const item = state.cart.find(i => i.productId === id);
+          updateQuantity(id, item.quantity - 1);
+        });
+      });
+
+      listEl.querySelectorAll("button[data-remove]").forEach(btn => {
+        btn.addEventListener("click", () => removeFromCart(Number(btn.dataset.remove)));
+      });
+
+      totalEl.textContent = `Total: $${getCartTotal().toFixed(2)}`;
+      countEl.textContent = `🛒 ${getCartCount()}`;
+    }
+
+    document.querySelector("#clear-cart-btn").addEventListener("click", clearCart);
+
+    // ==========================================================
+    // INIT
+    // ==========================================================
+    loadCart();
+    renderProducts();
+    renderCart();
+  </script>
+</body>
+</html>

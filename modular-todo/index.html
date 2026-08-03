@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Task 14.1 — Modular To-Do List</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 480px; margin: 40px auto; padding: 0 16px; }
+    form { display: flex; gap: 8px; margin-bottom: 14px; }
+    input[type="text"] { flex: 1; padding: 8px; font-size: 15px; }
+    button { padding: 8px 12px; font-size: 14px; cursor: pointer; }
+    .filters { display: flex; gap: 6px; margin-bottom: 14px; }
+    .filters button.active { background: #333; color: white; }
+    .todo { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid #eee; }
+    .todo.completed span { text-decoration: line-through; color: #999; }
+    .todo span { flex: 1; }
+    .todo small { color: #888; }
+    .empty-state { color: #888; font-style: italic; }
+  </style>
+</head>
+<body>
+  <h1>To-Do List (Modular)</h1>
+
+  <form id="todo-form">
+    <input id="todo-input" type="text" placeholder="Add a task..." required />
+    <button type="submit">Add</button>
+  </form>
+
+  <div class="filters">
+    <button data-filter="all" class="active">All</button>
+    <button data-filter="active">Active</button>
+    <button data-filter="completed">Completed</button>
+  </div>
+
+  <div id="todo-list"></div>
+
+  <!-- type="module" is required for import/export to work in the browser -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

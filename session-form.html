@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Task 13.3 — sessionStorage Auto-Save Form</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 480px; margin: 40px auto; padding: 0 16px; }
+    form { display: flex; flex-direction: column; gap: 10px; }
+    input, textarea { padding: 10px; font-size: 16px; font-family: inherit; }
+    button { padding: 10px; font-size: 16px; cursor: pointer; }
+    p.note { font-size: 13px; color: #666; }
+  </style>
+</head>
+<body>
+  <h1>Contact Form (sessionStorage)</h1>
+  <p class="note">Type something, then refresh the page — your text survives. Close and reopen the TAB (not just refresh) and it's gone, because this uses sessionStorage, not localStorage.</p>
+
+  <form id="contact-form">
+    <input name="fullName" type="text" placeholder="Full name" required />
+    <input name="email" type="email" placeholder="Email" required />
+    <textarea name="message" rows="4" placeholder="Message" required></textarea>
+    <button type="submit">Submit</button>
+  </form>
+
+  <script>
+    // ==========================================================
+    // Task 13.3 — sessionStorage auto-save
+    // Saves on every keystroke, restores on load, clears on submit
+    // ==========================================================
+
+    const form = document.querySelector("#contact-form");
+    const inputs = form.querySelectorAll("input, textarea");
+
+    inputs.forEach(input => {
+      // Load saved value on page load
+      const saved = sessionStorage.getItem(`form_${input.name}`);
+      if (saved) {
+        input.value = saved;
+      }
+
+      // Save on every input event (every keystroke)
+      input.addEventListener("input", () => {
+        sessionStorage.setItem(`form_${input.name}`, input.value);
+      });
+    });
+
+    // Clear on successful submit
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      inputs.forEach(input => {
+        sessionStorage.removeItem(`form_${input.name}`);
+      });
+      form.reset();
+      alert("Submitted! Draft cleared from sessionStorage.");
+    });
+  </script>
+</body>
+</html>

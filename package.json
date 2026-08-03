@@ -4,7 +4,10 @@
   "description": "",
   "main": "JsBestPractices.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest",
+    "lint": "eslint js/*.js modular-todo/js/*.js *.js",
+    "lint:fix": "eslint js/*.js modular-todo/js/*.js *.js --fix",
+    "format": "prettier --write js/*.js modular-todo/js/*.js *.js"
   },
   "repository": {
     "type": "git",
@@ -20,7 +23,9 @@
   "homepage": "https://github.com/TrevorWachira690/iyf-s11-week-07-TrevorWachira690#readme",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "eslint": "^10.8.0",
-    "globals": "^17.9.0"
+    "eslint": "^8.57.1",
+    "globals": "^17.9.0",
+    "prettier": "^3.9.6",
+    "vitest": "^4.1.10"
   }
 }
